@@ -1,0 +1,14 @@
+prefix: "&6&lSpleef "
+
+database:
+  uri: "mongodb://ClashHub:sX1TgVOrc2Dubgro@cluster0-shard-00-00-2r78e.mongodb.net:27017,cluster0-shard-00-01-2r78e.mongodb.net:27017,cluster0-shard-00-02-2r78e.mongodb.net:27017/HubData?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true&w=majority"
+
+messages:
+  grace-ending: "&7The garce period will be ending in %time%"
+  grace-finish: "&7Grace period has now finished, the breaking of blocks is now allowed"
+  game-starting: "&7The game will be starting shortly. Grace period is now activated"
+  player-eliminated: "&7%player% has fallen to their demise"
+  player-join: "&7%player% just has joined the game"
+  player-win: "&7%player% won the game"
+  player-spectate: "&7Unfortunately you have been eliminated from the game. Feel free to spectate"
+
