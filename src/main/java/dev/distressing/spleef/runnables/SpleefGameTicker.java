@@ -1,17 +1,20 @@
 package dev.distressing.spleef.runnables;
 
+import dev.distressing.spleef.configuration.Messages;
 import dev.distressing.spleef.enums.GameState;
 import dev.distressing.spleef.events.Game.GameStateChangeEvent;
+import dev.distressing.spleef.events.Game.GameTieEvent;
 import dev.distressing.spleef.events.Game.SpleefGameEndEvent;
-import dev.distressing.spleef.events.Player.PlayerEliminateEvent;
 import dev.distressing.spleef.events.Player.PlayerGameWinEvent;
 import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefGame;
 import dev.distressing.spleef.utils.ArenaUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
-import java.util.Optional;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SpleefGameTicker implements Runnable {
 
@@ -23,12 +26,10 @@ public class SpleefGameTicker implements Runnable {
 
     @Override
     public void run() {
-        Optional<Set<SpleefGame>> activeOptional = gameManager.getActiveGames();
+        Set<SpleefGame> active = gameManager.getGames();
 
-        if (!activeOptional.isPresent())
-            return;
+        active.forEach(game -> {
 
-        activeOptional.get().forEach(game -> {
             switch (game.getGameState()) {
                 case GRACE:
                     int waitTime = game.getWaitTime();
@@ -38,6 +39,7 @@ public class SpleefGameTicker implements Runnable {
                         return;
                     }
 
+                    game.setGameState(GameState.RUNNING);
                     Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(game));
                     break;
 
@@ -45,27 +47,28 @@ public class SpleefGameTicker implements Runnable {
 
                     if (game.getPlayers().size() <= 1) {
                         if (game.getPlayers().size() == 1) {
-                            Bukkit.getPluginManager().callEvent(new PlayerGameWinEvent(game.getPlayers().get(0), game));
+                            Player player = new ArrayList<Player>(game.getPlayers()).get(0);
+                            Bukkit.getPluginManager().callEvent(new PlayerGameWinEvent(player, game));
+                        } else {
+                            Bukkit.getPluginManager().callEvent(new GameTieEvent(game));
                         }
 
                         Bukkit.getPluginManager().callEvent(new SpleefGameEndEvent(game));
+                        game.setGameState(GameState.WAITING);
                         Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(game));
                     }
 
-                    game.getPlayers().stream().filter(player -> ArenaUtils.isInArea(game, player)).forEach(player -> {
-                        PlayerEliminateEvent event1 = new PlayerEliminateEvent(player, game);
-                        Bukkit.getPluginManager().callEvent(event1);
-                    });
-
-                    game.setWaitTime(10);
+                    Set<Player> players = game.getPlayers().stream().filter(player -> ArenaUtils.isInArea(game, player)).collect(Collectors.toSet());
+                    players.forEach(game::eliminate);
 
                     break;
 
                 case WAITING:
                     if (game.getPlayers().size() >= game.getMinimumToRun()) {
                         game.setGameState(GameState.CONFIRMED);
+                        game.setWaitTime(10 * gameManager.getGameTickRate());
+                        game.getArena().paste(game.getArenaOrigin());
                         Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(game));
-                        game.setWaitTime(10);
                     }
                     break;
 
@@ -74,6 +77,23 @@ public class SpleefGameTicker implements Runnable {
                         game.setGameState(GameState.WAITING);
                         Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(game));
                     }
+                    int waitTime2 = game.getWaitTime();
+                    if (waitTime2 != 0) {
+                        waitTime2--;
+                        game.setWaitTime(waitTime2);
+
+                        if (waitTime2 < 4 * gameManager.getGameTickRate() && (waitTime2 & gameManager.getGameTickRate()) == 0) {
+                            String message = Messages.GAME_STARTING.getWithPrefix().replace("%time%", (waitTime2 / gameManager.getGameTickRate()) + "");
+                            game.getPlayers().forEach(player -> player.sendMessage(message));
+                        }
+
+                        return;
+                    }
+
+                    game.start();
+                    game.setWaitTime(10 * gameManager.getGameTickRate());
+
+                    break;
 
                 default:
                     break;

@@ -38,12 +38,14 @@ public class PlayerDataSaveTask implements Runnable {
                 SpleefDataManager.getUpdateOptions()
         );
 
+        if (spleefDataManager.isShutdown())
+            return;
+
         Bukkit.getScheduler().runTask(SpleefPlugin.getInstance(), () -> {
             OfflinePlayer player = Bukkit.getOfflinePlayer(spleefPlayer.getPlayerID());
             if (player.isOnline())
                 return;
             spleefDataManager.setUnloaded(player);
         });
-
     }
 }

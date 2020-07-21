@@ -14,11 +14,11 @@ import dev.distressing.spleef.data.events.PlayerDataLoadedEvent;
 import dev.distressing.spleef.data.objects.SpleefPlayer;
 import dev.distressing.spleef.data.tasks.PlayerDataLoadTask;
 import dev.distressing.spleef.data.tasks.PlayerDataSaveTask;
+import lombok.Getter;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,33 +32,31 @@ import java.util.logging.Level;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+@Getter
 public class SpleefDataManager {
     private static final FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().upsert(true);
     private final ExecutorService databaseThreadPool = Executors.newFixedThreadPool(16);
     private final ConcurrentHashMap<UUID, SpleefPlayer> spleefPlayers = new ConcurrentHashMap<UUID, SpleefPlayer>();
-    private final CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
-    private final CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-    private final ConnectionString connectionString;
-    private final MongoClientSettings mongoClientSettings;
-    private final MongoClient mongoClient;
-    private final MongoDatabase mongoDatabase;
     private final MongoCollection<SpleefPlayer> playerCollection;
+    private boolean shutdown = false;
 
-    public SpleefDataManager(Configuration config) {
+    public SpleefDataManager() {
 
         log("Setting up mongoDB");
 
-        connectionString = new ConnectionString(SpleefConfig.getDBURI());
-        mongoClientSettings = MongoClientSettings.builder()
+        ConnectionString connectionString = new ConnectionString(SpleefConfig.getDBURI());
+        CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+        MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .retryWrites(true)
                 .codecRegistry(codecRegistry)
                 .applyConnectionString(connectionString)
                 .build();
 
         log("Mongo settings set, Loading client");
-        mongoClient = MongoClients.create(mongoClientSettings);
+        MongoClient mongoClient = MongoClients.create(mongoClientSettings);
         log("Created server connection, Loading database");
-        mongoDatabase = mongoClient.getDatabase("customer_123170");
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("customer_123170");
         log("Loaded database, Locating collection");
         playerCollection = mongoDatabase.getCollection("PlayerCollection", SpleefPlayer.class);
         log("Collection found with " + playerCollection.countDocuments() + " documents");
@@ -125,6 +123,7 @@ public class SpleefDataManager {
     }
 
     public void shutdown() {
+        shutdown = true;
         saveAll();
         try {
             databaseThreadPool.shutdown();

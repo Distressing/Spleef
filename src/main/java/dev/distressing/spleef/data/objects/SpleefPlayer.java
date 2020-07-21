@@ -1,7 +1,7 @@
 package dev.distressing.spleef.data.objects;
 
 import dev.distressing.spleef.data.enums.DataType;
-import dev.distressing.spleef.data.enums.PlayerState;
+import dev.distressing.spleef.data.enums.LeaveReason;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -23,7 +23,7 @@ public class SpleefPlayer {
     @BsonProperty(value = "Losses")
     private Integer losses;
     private DataType dataType;
-    private PlayerState playerState;
+    private LeaveReason playerState;
 
     public SpleefPlayer() {
     }
@@ -75,11 +75,11 @@ public class SpleefPlayer {
         this.losses += losses;
     }
 
-    public PlayerState getPlayerState() {
+    public LeaveReason getPlayerState() {
         return playerState;
     }
 
-    public void setPlayerState(PlayerState playerState) {
+    public void setPlayerState(LeaveReason playerState) {
         this.playerState = playerState;
     }
 

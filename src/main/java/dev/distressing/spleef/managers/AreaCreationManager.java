@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class SpleefAreaCreationManager {
+public class AreaCreationManager {
     private final ArenaManager arenaManager;
     private final GameManager gameManager;
     private final HashMap<UUID, SpleefAreaBuilder> areaBuilders = new HashMap<>();
 
-    public SpleefAreaCreationManager(ArenaManager arenaManager, GameManager gameManager) {
+    public AreaCreationManager(ArenaManager arenaManager, GameManager gameManager) {
         this.arenaManager = arenaManager;
         this.gameManager = gameManager;
     }

@@ -1,7 +1,8 @@
 package dev.distressing.spleef.listeners;
 
 import dev.distressing.spleef.configuration.Messages;
-import dev.distressing.spleef.managers.SpleefAreaCreationManager;
+import dev.distressing.spleef.managers.AreaCreationManager;
+import dev.distressing.spleef.managers.ArenaManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,10 +13,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class AreaCreationListener implements Listener {
 
-    private final SpleefAreaCreationManager areaCreationManager;
+    private final AreaCreationManager areaCreationManager;
+    private final ArenaManager arenaManager;
 
-    public AreaCreationListener(SpleefAreaCreationManager areaCreationManager) {
+    public AreaCreationListener(AreaCreationManager areaCreationManager, ArenaManager arenaManager) {
         this.areaCreationManager = areaCreationManager;
+        this.arenaManager = arenaManager;
     }
 
     @EventHandler
@@ -44,6 +47,7 @@ public class AreaCreationListener implements Listener {
         if (!event.getMessage().equalsIgnoreCase("cancel"))
             return;
 
+        event.setCancelled(true);
         areaCreationManager.stopBuilder(player);
         player.sendMessage(Messages.AREA_BUILDING_CANCELED.getWithPrefix());
     }

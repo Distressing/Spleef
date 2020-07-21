@@ -1,10 +1,12 @@
 package dev.distressing.spleef.objects;
 
+import dev.distressing.spleef.utils.ArenaUtils;
 import dev.distressing.spleef.utils.NMSUtils;
 import lombok.Getter;
 import net.minecraft.server.v1_8_R3.ChunkCoordIntPair;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,14 +19,17 @@ public class SpleefArea {
     private final LocationTriplet spawnPoint;
     private final Location center;
     private final LocationTriplet centerOffset;
+    private final LocationTriplet eZoneMin;
+    private final LocationTriplet eZoneMax;
     private List<OffsetCloneBlock> spleefArenaBlocks;
-    private LocationTriplet eZoneMin;
-    private LocationTriplet eZoneMax;
 
     public SpleefArea(Location minLocation, Location maxLocation, Location spawnPoint, Location eZoneMin, Location eZoneMax) {
         this.arenaMinLocation = minLocation;
         this.arenaMaxLocation = maxLocation;
-        this.spawnPoint = new LocationTriplet(spawnPoint.getBlockX(), spawnPoint.getBlockY(), spawnPoint.getBlockZ());
+
+        this.eZoneMin = ArenaUtils.getOffsetLocationTriplet(minLocation, eZoneMin);
+        this.eZoneMax = ArenaUtils.getOffsetLocationTriplet(minLocation, eZoneMax);
+        this.spawnPoint = ArenaUtils.getOffsetLocationTriplet(minLocation, spawnPoint);
 
         //Obtain center of arena via the mean
         this.center = new Location(
@@ -34,8 +39,8 @@ public class SpleefArea {
                 (minLocation.getBlockZ() + maxLocation.getBlockZ()) / 2
         );
 
-        centerOffset = new LocationTriplet(center.getBlockX() - minLocation.getBlockX(), center.getBlockY() - minLocation.getBlockY(), center.getBlockZ() - minLocation.getBlockZ());
-
+        centerOffset = ArenaUtils.getOffsetLocationTriplet(minLocation, center);
+        spleefArenaBlocks = new ArrayList<>();
         refreshArena();
     }
 
@@ -43,28 +48,9 @@ public class SpleefArea {
         return Optional.ofNullable(spleefArenaBlocks);
     }
 
-    public void refreshArena() {
-        if (!arenaMinLocation.getWorld().equals(arenaMaxLocation.getWorld())) {
-            Bukkit.getLogger().log(Level.SEVERE, "Arena points must be in the same world");
-            return;
-        }
-
-        List<OffsetCloneBlock> blocks = new ArrayList<>();
-
-        for (int x = 0; arenaMinLocation.getBlockX() + x < arenaMaxLocation.getBlockX(); x++) {
-            for (int y = 0; arenaMinLocation.getBlockY() + y < arenaMaxLocation.getBlockY(); y++) {
-                for (int z = 0; arenaMinLocation.getBlockZ() + z < arenaMaxLocation.getBlockZ(); z++) {
-                    OffsetCloneBlock offsetCloneBlock = new OffsetCloneBlock(x, y, z, arenaMinLocation.add(x, y, z).getBlock());
-                    blocks.add(offsetCloneBlock);
-                }
-            }
-        }
-        spleefArenaBlocks = blocks;
-    }
-
     public Location getSpawn(Location origin) {
         Location spawn = origin.clone();
-        return spawn.add(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+        return spawn.clone().add(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
     }
 
     public LocationTriplet getCenterOffset() {
@@ -72,6 +58,10 @@ public class SpleefArea {
     }
 
     public void paste(Location origin) {
+
+        if (spleefArenaBlocks.isEmpty())
+            refreshArena();
+
         HashMap<ChunkCoordIntPair, HashSet<DBlock>> blocks = new HashMap<>();
         AtomicReference<ChunkCoordIntPair> currentCCIP = new AtomicReference<>(new ChunkCoordIntPair(0, 0));
         int oX = origin.getBlockX();
@@ -92,7 +82,30 @@ public class SpleefArea {
         });
 
         NMSUtils.spawnArena(blocks, origin);
-        NMSUtils.refreshArena(this, origin.getWorld(), origin);
+    }
 
+    public void refreshArena() {
+        spleefArenaBlocks.clear();
+        if (!arenaMinLocation.getWorld().equals(arenaMaxLocation.getWorld())) {
+            Bukkit.getLogger().log(Level.SEVERE, "Arena points must be in the same world");
+            return;
+        }
+
+        List<OffsetCloneBlock> blocks = new ArrayList<>();
+
+        for (int x = 0; arenaMinLocation.getBlockX() + x <= arenaMaxLocation.getBlockX(); x++) {
+            for (int y = 0; arenaMinLocation.getBlockY() + y <= arenaMaxLocation.getBlockY(); y++) {
+                for (int z = 0; arenaMinLocation.getBlockZ() + z <= arenaMaxLocation.getBlockZ(); z++) {
+                    OffsetCloneBlock offsetCloneBlock = new OffsetCloneBlock(x, y, z, arenaMinLocation.clone().add(x, y, z).getBlock());
+                    blocks.add(offsetCloneBlock);
+                }
+            }
+        }
+        blocks.removeIf(block -> block.getMaterial().equals(Material.AIR));
+        spleefArenaBlocks = blocks;
+    }
+
+    public void clearBlocks() {
+        spleefArenaBlocks.clear();
     }
 }

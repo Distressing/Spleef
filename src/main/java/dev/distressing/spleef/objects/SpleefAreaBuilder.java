@@ -1,8 +1,8 @@
 package dev.distressing.spleef.objects;
 
 import dev.distressing.spleef.configuration.Messages;
+import dev.distressing.spleef.managers.AreaCreationManager;
 import dev.distressing.spleef.managers.ArenaManager;
-import dev.distressing.spleef.managers.SpleefAreaCreationManager;
 import dev.distressing.spleef.utils.ArenaUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 @Getter
 @Setter
 public class SpleefAreaBuilder {
-    private int creationStep;
     private final String name;
     private final Player player;
+    private int creationStep;
     private Location pos1, pos2, eZonePos1, eZonePos2, spawnPoint;
 
     public SpleefAreaBuilder(Player player, String name) {
@@ -35,7 +35,7 @@ public class SpleefAreaBuilder {
         creationStep++;
     }
 
-    public void build(ArenaManager arenaManager, SpleefAreaCreationManager areaCreationManager) {
+    public void build(ArenaManager arenaManager, AreaCreationManager areaCreationManager) {
         if (arenaManager.getArena(name).isPresent()) {
             player.sendMessage(Messages.AREA_EXISTS.getWithPrefix());
             areaCreationManager.stopBuilder(player);

@@ -18,9 +18,19 @@ public enum Messages {
     GAME_LOSS("&7You died, Better luck next time!"),
     GAME_INPROGRESS("&7You cannot join a game that is already ongoing"),
     GAME_NOPVP("&7Pvp is disabled during Spleef games"),
+    GAME_NONE_FOUND("&7There are currently no open games"),
+    GAME_LIST("&7%name%"),
 
     NoPermission("&cInsufficient permissions"),
 
+    ALREADY_IN_GAME("&7You cannot join a game when you are already in a game."),
+
+    PLAYER_STATS("&7%player% has %wins% wins and %losses% losses"),
+    PLAYER_NOT_FOUND("&7Unable to find player"),
+
+    MAIN_HELP_STATS("&7Use '/spleef stats (player)' to view player stats"),
+    MAIN_HELP_JOINABLE("&7Use '/spleef joinable' to see joinable games"),
+    MAIN_HELP_JOIN("&7Use '/spleef join (name)' to join an open game"),
     MAIN_HELP_ARENA("&7Use '/spleef arena' to create a play area for games to use"),
     MAIN_HELP_GAMES("&7Use '/spleef create <name> <arena name> <player count>' to create a game with your current location as the games origin"),
 
@@ -39,7 +49,8 @@ public enum Messages {
     AREA_CREATION_SUCCESS("&7Arena creation success"),
     AREA_OUTSIDE_BOUNDS("&7This location is outside the bounds of the main arena"),
     AREA_WITHIN_ELIMINATION("&7The selected spawn point is within the elimination zone."),
-    AREA_BUILDING_CANCELED("&7You have canceled the building of an arena");
+    AREA_BUILDING_CANCELED("&7You have canceled the building of an arena"),
+    AREA_NOT_FOUND("&7An arena with that name was not found");
 
 
     private String message;

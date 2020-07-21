@@ -48,7 +48,7 @@ public class SpleefConfig {
     }
 
     public static String getDBURI() {
-        config.addDefault("database.uri", "mongodb://customer_123170:baLGQwTStMoI@10.0.0.2:27017/customer_123170?ssl=false&authSource=customer_123170&retryWrites=true&w=majority");
+        config.addDefault("database.uri", "mongodb://username:password@host:27017/database?ssl=false&authSource=authdb&retryWrites=true&w=majority");
         save();
         return config.getString("database.uri");
     }

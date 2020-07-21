@@ -21,4 +21,8 @@ public class ArenaManager {
         area.refreshArena();
     }
 
+    public void clearCache() {
+        arenas.values().forEach(SpleefArea::clearBlocks);
+    }
+
 }
