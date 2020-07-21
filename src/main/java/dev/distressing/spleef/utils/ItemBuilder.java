@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ItemBuilder {
-    ItemStack item;
+    private ItemStack item;
 
     public ItemBuilder(ItemStack itemStack) {
         this.item = itemStack;

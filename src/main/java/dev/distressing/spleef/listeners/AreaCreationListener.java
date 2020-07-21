@@ -14,11 +14,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class AreaCreationListener implements Listener {
 
     private final AreaCreationManager areaCreationManager;
-    private final ArenaManager arenaManager;
 
-    public AreaCreationListener(AreaCreationManager areaCreationManager, ArenaManager arenaManager) {
+    public AreaCreationListener(AreaCreationManager areaCreationManager) {
         this.areaCreationManager = areaCreationManager;
-        this.arenaManager = arenaManager;
     }
 
     @EventHandler

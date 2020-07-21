@@ -1,4 +1,4 @@
-package dev.distressing.spleef.events.Game;
+package dev.distressing.spleef.events.game;
 
 import dev.distressing.spleef.objects.SpleefGame;
 import org.bukkit.event.Cancellable;

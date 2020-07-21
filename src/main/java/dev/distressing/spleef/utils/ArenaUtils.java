@@ -26,7 +26,9 @@ public class ArenaUtils {
     }
 
     public static Location getMinLocation(Location location, Location location2) {
-        int minx, miny, minz;
+        int minx;
+        int miny;
+        int minz;
 
         minx = Math.min(location.getBlockX(), location2.getBlockX());
         miny = Math.min(location.getBlockY(), location2.getBlockY());
@@ -36,7 +38,9 @@ public class ArenaUtils {
     }
 
     public static Location getMaxLocation(Location location, Location location2) {
-        int maxx, maxy, maxz;
+        int maxx;
+        int maxy;
+        int maxz;
 
         maxx = Math.max(location.getBlockX(), location2.getBlockX());
         maxy = Math.max(location.getBlockY(), location2.getBlockY());

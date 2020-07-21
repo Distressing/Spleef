@@ -1,10 +1,10 @@
 package dev.distressing.spleef.listeners;
 
 import dev.distressing.spleef.configuration.Messages;
-import dev.distressing.spleef.events.Game.GameStateChangeEvent;
-import dev.distressing.spleef.events.Game.SpleefGameEndEvent;
-import dev.distressing.spleef.events.Game.SpleefStartGameEvent;
-import dev.distressing.spleef.events.Player.PlayerGameWinEvent;
+import dev.distressing.spleef.events.game.GameStateChangeEvent;
+import dev.distressing.spleef.events.game.SpleefGameEndEvent;
+import dev.distressing.spleef.events.game.SpleefStartGameEvent;
+import dev.distressing.spleef.events.player.PlayerGameWinEvent;
 import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefGame;
 import dev.distressing.spleef.utils.Chat;
@@ -42,6 +42,9 @@ public class GameListeners implements Listener {
             case RUNNING:
                 String running = Chat.color(Messages.GAME_GRACE_END.getWithPrefix());
                 game.getPlayers().forEach(player -> player.sendMessage(running));
+                break;
+
+            default:
                 break;
         }
 

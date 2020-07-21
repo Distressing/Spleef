@@ -2,10 +2,10 @@ package dev.distressing.spleef.runnables;
 
 import dev.distressing.spleef.configuration.Messages;
 import dev.distressing.spleef.enums.GameState;
-import dev.distressing.spleef.events.Game.GameStateChangeEvent;
-import dev.distressing.spleef.events.Game.GameTieEvent;
-import dev.distressing.spleef.events.Game.SpleefGameEndEvent;
-import dev.distressing.spleef.events.Player.PlayerGameWinEvent;
+import dev.distressing.spleef.events.game.GameStateChangeEvent;
+import dev.distressing.spleef.events.game.GameTieEvent;
+import dev.distressing.spleef.events.game.SpleefGameEndEvent;
+import dev.distressing.spleef.events.player.PlayerGameWinEvent;
 import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefGame;
 import dev.distressing.spleef.utils.ArenaUtils;

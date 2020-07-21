@@ -4,8 +4,8 @@ import dev.distressing.spleef.data.SpleefDataManager;
 import dev.distressing.spleef.data.enums.LeaveReason;
 import dev.distressing.spleef.data.objects.SpleefPlayer;
 import dev.distressing.spleef.enums.GameState;
-import dev.distressing.spleef.events.Player.PlayerGameWinEvent;
-import dev.distressing.spleef.events.Player.PlayerLeaveEvent;
+import dev.distressing.spleef.events.player.PlayerGameWinEvent;
+import dev.distressing.spleef.events.player.PlayerLeaveEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

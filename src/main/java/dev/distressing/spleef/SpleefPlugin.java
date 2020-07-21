@@ -53,7 +53,7 @@ public class SpleefPlugin extends JavaPlugin {
 
         registerListeners(
                 new PlayerListeners(spleefDataManager, gameManager),
-                new AreaCreationListener(areaCreationManager, arenaManager),
+                new AreaCreationListener(areaCreationManager),
                 new GameListeners(gameManager),
                 new StatisticsListener(spleefDataManager)
         );

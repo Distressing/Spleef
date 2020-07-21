@@ -1,7 +1,7 @@
 package dev.distressing.spleef.managers;
 
 import dev.distressing.spleef.enums.GameState;
-import dev.distressing.spleef.events.Game.GameStateChangeEvent;
+import dev.distressing.spleef.events.game.GameStateChangeEvent;
 import dev.distressing.spleef.objects.SpleefGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -65,7 +65,7 @@ public class GameManager {
     }
 
     public void processJoinRequest(Player player, SpleefGame spleefGame) {
-
+        spleefGame.processJoin(player);
     }
 
     public void processLeaveRequest(Player player) {

@@ -138,7 +138,7 @@ public class SpleefCMD implements CommandExecutor {
                     spleefGame = filteredGame.get();
                 }
 
-                spleefGame.processJoin((Player) sender);
+                gameManager.processJoinRequest((Player)sender, spleefGame);
                 break;
 
             case "joinable":
