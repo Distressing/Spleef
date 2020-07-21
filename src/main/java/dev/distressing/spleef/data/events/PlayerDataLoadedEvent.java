@@ -8,26 +8,28 @@ import org.bukkit.event.HandlerList;
 public class PlayerDataLoadedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
-    private Player player;
-    private SpleefPlayer spleefPlayer;
+    private final Player player;
+    private final SpleefPlayer spleefPlayer;
 
-    public PlayerDataLoadedEvent(Player player, SpleefPlayer spleefPlayer){
+    public PlayerDataLoadedEvent(Player player, SpleefPlayer spleefPlayer) {
         this.player = player;
         this.spleefPlayer = spleefPlayer;
     }
 
-    public Player getPlayer(){
-        return player;
-    }
-
-    public SpleefPlayer getSpleefPlayer() {return spleefPlayer;}
-
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    public Player getPlayer() {
+        return player;
+    }
+
+    public SpleefPlayer getSpleefPlayer() {
+        return spleefPlayer;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

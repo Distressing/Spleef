@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import dev.distressing.spleef.SpleefPlugin;
+import dev.distressing.spleef.configuration.SpleefConfig;
 import dev.distressing.spleef.data.enums.DataType;
 import dev.distressing.spleef.data.events.PlayerDataLoadedEvent;
 import dev.distressing.spleef.data.objects.SpleefPlayer;
@@ -22,33 +23,32 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class SpleefDataManager {
-    private ExecutorService databaseThreadPool = Executors.newFixedThreadPool(16);
-    private ConcurrentHashMap<UUID, SpleefPlayer> spleefPlayers = new ConcurrentHashMap<UUID, SpleefPlayer>();
-    private CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
-    private CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-    private static FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().upsert(true);
-    private ConnectionString connectionString;
-    private MongoClientSettings mongoClientSettings;
-    private MongoClient mongoClient;
-    private MongoDatabase mongoDatabase;
-    private MongoCollection<SpleefPlayer> playerCollection;
-
-    private void log(String string) {
-        Bukkit.getLogger().log(Level.INFO, "[Spleef Data] "+string);
-    }
+    private static final FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().upsert(true);
+    private final ExecutorService databaseThreadPool = Executors.newFixedThreadPool(16);
+    private final ConcurrentHashMap<UUID, SpleefPlayer> spleefPlayers = new ConcurrentHashMap<UUID, SpleefPlayer>();
+    private final CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
+    private final CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+    private final ConnectionString connectionString;
+    private final MongoClientSettings mongoClientSettings;
+    private final MongoClient mongoClient;
+    private final MongoDatabase mongoDatabase;
+    private final MongoCollection<SpleefPlayer> playerCollection;
 
     public SpleefDataManager(Configuration config) {
 
         log("Setting up mongoDB");
 
-        connectionString = new ConnectionString(config.getString("database.uri"));
+        connectionString = new ConnectionString(SpleefConfig.getDBURI());
         mongoClientSettings = MongoClientSettings.builder()
                 .retryWrites(true)
                 .codecRegistry(codecRegistry)
@@ -58,10 +58,10 @@ public class SpleefDataManager {
         log("Mongo settings set, Loading client");
         mongoClient = MongoClients.create(mongoClientSettings);
         log("Created server connection, Loading database");
-        mongoDatabase = mongoClient.getDatabase("SpleefData");
+        mongoDatabase = mongoClient.getDatabase("customer_123170");
         log("Loaded database, Locating collection");
         playerCollection = mongoDatabase.getCollection("PlayerCollection", SpleefPlayer.class);
-        log("Collection found with "+playerCollection.countDocuments()+" documents");
+        log("Collection found with " + playerCollection.countDocuments() + " documents");
 
         //Load user data of all users online
         Bukkit.getOnlinePlayers().forEach(this::loadData);
@@ -69,20 +69,28 @@ public class SpleefDataManager {
         Bukkit.getScheduler().runTaskTimerAsynchronously(SpleefPlugin.getInstance(), this::saveAll, 600, 600);
     }
 
-    public static FindOneAndUpdateOptions getUpdateOptions() {return options;}
+    public static FindOneAndUpdateOptions getUpdateOptions() {
+        return options;
+    }
 
-    public MongoCollection<SpleefPlayer> getPlayerCollection() {return playerCollection;}
+    private void log(String string) {
+        Bukkit.getLogger().log(Level.INFO, "[Spleef Data] " + string);
+    }
+
+    public MongoCollection<SpleefPlayer> getPlayerCollection() {
+        return playerCollection;
+    }
 
     @Nullable
     public SpleefPlayer get(Player player) {
         return spleefPlayers.get(player.getUniqueId());
     }
 
-    public void setLoaded(Player player, SpleefPlayer spleefPlayer){
+    public void setLoaded(Player player, SpleefPlayer spleefPlayer) {
         UUID uuid = player.getUniqueId();
         SpleefPlayer current = spleefPlayers.get(spleefPlayer.getPlayerID());
 
-        if(current == null || current.getDataType().equals(DataType.PERSTISTANT)){
+        if (current == null || current.getDataType().equals(DataType.PERSTISTANT)) {
             //Temporary data wasn't present, player must of left during data load process or player data was already loaded
             return;
         }
@@ -100,7 +108,7 @@ public class SpleefDataManager {
     }
 
     private void createTempData(Player player) {
-        spleefPlayers.put(player.getUniqueId(),new SpleefPlayer(player));
+        spleefPlayers.put(player.getUniqueId(), new SpleefPlayer(player));
     }
 
     public void loadData(Player player) {

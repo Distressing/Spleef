@@ -16,7 +16,7 @@ import static com.mongodb.client.model.Updates.set;
 public class SpleefPlayer {
 
     private ObjectId id;
-    @BsonProperty(value = "playerID")
+    @BsonProperty(value = "PlayerID")
     private UUID playerID;
     @BsonProperty(value = "Wins")
     private Integer wins;
@@ -25,7 +25,8 @@ public class SpleefPlayer {
     private DataType dataType;
     private PlayerState playerState;
 
-    public SpleefPlayer(){}
+    public SpleefPlayer() {
+    }
 
     public SpleefPlayer(Player player) {
         this.playerID = player.getUniqueId();
@@ -34,12 +35,12 @@ public class SpleefPlayer {
         dataType = DataType.TEMP;
     }
 
-    public void setDataType(DataType dataType){
-        this.dataType = dataType;
-    }
-
     public DataType getDataType() {
         return dataType;
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
     }
 
     public Integer getWins() {
@@ -58,52 +59,52 @@ public class SpleefPlayer {
         this.losses = losses;
     }
 
-    public void setPlayerID(UUID uuid){
-        this.playerID = playerID;
-    }
-
     public UUID getPlayerID() {
         return playerID;
+    }
+
+    public void setPlayerID(UUID uuid) {
+        this.playerID = uuid;
     }
 
     public void addWins(Integer wins) {
         this.wins += wins;
     }
 
-    public void addLosses(Integer losses){
+    public void addLosses(Integer losses) {
         this.losses += losses;
-    }
-
-    public void setPlayerState(PlayerState playerState){
-        this.playerState = playerState;
     }
 
     public PlayerState getPlayerState() {
         return playerState;
     }
 
-    public Bson serialise(){
+    public void setPlayerState(PlayerState playerState) {
+        this.playerState = playerState;
+    }
+
+    public Bson serialise() {
         return combine(
-                set("playerID", playerID),
+                set("PlayerID", playerID),
                 set("Wins", wins),
                 set("Losses", losses)
         );
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         final StringBuffer sb = new StringBuffer(("SpleefPlayer{"));
         sb.append("id=").append(id);
-        sb.append(", playerUUID=").append(playerID.toString());
-        sb.append(", firstJoin=").append(wins);
-        sb.append(", lmsKills=").append(losses);
+        sb.append(", playerID=").append(playerID.toString());
+        sb.append(", spleefwins=").append(wins);
+        sb.append(", spleeflosses=").append(losses);
         sb.append("}");
 
         return sb.toString();
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
@@ -113,7 +114,7 @@ public class SpleefPlayer {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return Objects.hash(id, playerID, wins, losses);
     }
 }

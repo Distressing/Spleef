@@ -1,0 +1,5 @@
+name: Spleef
+main: dev.distressing.spleef.SpleefPlugin
+version: 0.2
+commands:
+  spleef:

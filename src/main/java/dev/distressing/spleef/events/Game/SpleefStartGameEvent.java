@@ -1,19 +1,19 @@
-package dev.distressing.spleef.events;
+package dev.distressing.spleef.events.Game;
 
 import dev.distressing.spleef.objects.SpleefGame;
 import org.bukkit.event.Cancellable;
 
-public class SpleefStartEvent extends SpleefEvent implements Cancellable {
+public class SpleefStartGameEvent extends SpleefGameEvent implements Cancellable {
 
-    private SpleefGame spleefGame;
+    private final SpleefGame spleefGame;
     private boolean canceled;
 
-    public SpleefStartEvent(SpleefGame spleefGame){
+    public SpleefStartGameEvent(SpleefGame spleefGame) {
         this.spleefGame = spleefGame;
         this.canceled = false;
     }
 
-    public SpleefGame getSpleefGame(){
+    public SpleefGame getSpleefGame() {
         return spleefGame;
     }
 

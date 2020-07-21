@@ -1,7 +1,9 @@
 package dev.distressing.spleef.managers;
 
 import dev.distressing.spleef.enums.GameState;
+import dev.distressing.spleef.events.Game.GameStateChangeEvent;
 import dev.distressing.spleef.objects.SpleefGame;
+import org.bukkit.Bukkit;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -9,7 +11,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GameManager {
-    private HashSet<SpleefGame> games = new HashSet<>();
+    private final HashSet<SpleefGame> games = new HashSet<>();
+    private int gameTickRate = 5;
+
+    public void resetGames() {
+        games.forEach(game -> {
+            game.getPlayers().clear();
+            game.setWaitTime(0);
+            game.setGameState(GameState.WAITING);
+            Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(game));
+        });
+    }
 
     public void addGame(SpleefGame spleefGame) {
         games.add(spleefGame);
@@ -29,6 +41,14 @@ public class GameManager {
 
     public Set<SpleefGame> getGames() {
         return games;
+    }
+
+    public int getGameTickRate() {
+        return gameTickRate;
+    }
+
+    public void setGameTickRate(int tickRate) {
+        this.gameTickRate = tickRate;
     }
 
 }

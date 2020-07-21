@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -22,10 +21,9 @@ import java.util.stream.Collectors;
 
 public class NMSUtils {
 
-    private Map<org.bukkit.Material, IBlockData> dataMap = new HashMap<>();
-
-    public void spawnArena(HashMap<ChunkCoordIntPair, HashSet<DBlock>> request, Location location) {
-        net.minecraft.server.v1_8_R3.World nmsWorld = ((CraftWorld)location.getWorld()).getHandle();
+    public static void spawnArena(HashMap<ChunkCoordIntPair, HashSet<DBlock>> request, Location location) {
+        Map<org.bukkit.Material, IBlockData> dataMap = new HashMap<>();
+        net.minecraft.server.v1_8_R3.World nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         request.forEach((key, value) -> {
             Chunk nmsChunk = nmsWorld.getChunkAt(key.x, key.z);
 
@@ -34,7 +32,7 @@ public class NMSUtils {
                 int indexY = blockPosition.getY() >> 4;
                 ChunkSection section = nmsChunk.getSections()[indexY];
 
-                if(section == null)
+                if (section == null)
                     section = nmsChunk.getSections()[indexY] = new ChunkSection(indexY << 4, !nmsChunk.world.worldProvider.o());
 
                 IBlockData data = dataMap.computeIfAbsent(dBlock.getMaterial(), mat -> CraftMagicNumbers.getBlock(dBlock.getMaterial()).getBlockData());
@@ -44,25 +42,25 @@ public class NMSUtils {
         });
     }
 
-    public void refreshArena(SpleefArea area, World world, Location origin) {
+    public static void refreshArena(SpleefArea area, World world, Location origin) {
         HashSet<ChunkCoordIntPair> chunkCoordIntPairs = new HashSet<>();
 
-        net.minecraft.server.v1_8_R3.World nmsWorld = ((CraftWorld)world).getHandle();
+        net.minecraft.server.v1_8_R3.World nmsWorld = ((CraftWorld) world).getHandle();
 
         int xmin = area.getArenaMinLocation().getBlockX() >> 4;
         int xmax = area.getArenaMaxLocation().getBlockX() >> 4;
         int zmin = area.getArenaMinLocation().getBlockZ() >> 4;
         int zmax = area.getArenaMaxLocation().getBlockZ() >> 4;
 
-        for(; xmin <= xmax; xmin++){
-            for(; zmin <= zmax; zmax++){
+        for (; xmin <= xmax; xmin++) {
+            for (; zmin <= zmax; zmax++) {
                 chunkCoordIntPairs.add(new ChunkCoordIntPair(xmin, zmin));
             }
         }
 
         HashSet<Packet> packets = new HashSet<>();
 
-        chunkCoordIntPairs.stream().filter(pair -> ((CraftWorld)world).getHandle().getPlayerChunkMap().isChunkInUse(pair.x, pair.z)).map(pair -> nmsWorld.getChunkAt(pair.x, pair.z)).forEach(chunk -> {
+        chunkCoordIntPairs.stream().filter(pair -> ((CraftWorld) world).getHandle().getPlayerChunkMap().isChunkInUse(pair.x, pair.z)).map(pair -> nmsWorld.getChunkAt(pair.x, pair.z)).forEach(chunk -> {
             packets.add(new PacketPlayOutMapChunk(chunk, false, 65280));
             packets.add(new PacketPlayOutMapChunk(chunk, false, 255));
             chunk.getTileEntities().forEach((key, value) -> packets.add(value.getUpdatePacket()));
@@ -73,7 +71,7 @@ public class NMSUtils {
 
         Set<EntityPlayer> players = world.getNearbyEntities(origin.add(center.getX(), center.getY(), center.getZ()), viewDistance, 256, viewDistance).stream()
                 .filter(ent -> ent instanceof Player)
-                .map(entity -> ((CraftPlayer)entity).getHandle())
+                .map(entity -> ((CraftPlayer) entity).getHandle())
                 .collect(Collectors.toSet());
 
         packets.forEach(packet -> {
@@ -81,7 +79,7 @@ public class NMSUtils {
         });
     }
 
-    private BlockPosition getBlockPosition(DBlockPosition dBlockPosition) {
+    private static BlockPosition getBlockPosition(DBlockPosition dBlockPosition) {
         return new BlockPosition(dBlockPosition.getX(), dBlockPosition.getY(), dBlockPosition.getZ());
     }
 }

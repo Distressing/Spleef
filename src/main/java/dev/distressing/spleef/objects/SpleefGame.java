@@ -1,7 +1,10 @@
 package dev.distressing.spleef.objects;
 
 import dev.distressing.spleef.enums.GameState;
-import dev.distressing.spleef.events.SpleefStartEvent;
+import dev.distressing.spleef.events.Game.SpleefStartGameEvent;
+import dev.distressing.spleef.events.Player.PlayerEliminateEvent;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -9,72 +12,46 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 public class SpleefGame {
 
-    private List<Player> players;
-    private Integer minimumToRun;
+    private final List<Player> players;
+    private final Integer minimumToRun;
     private Integer waitTime;
-    private SpleefArea arena;
-    private Location arenaLocation;
+    private final SpleefArea arena;
+    private final Location arenaOrigin;
+    private final Location eZoneMin;
+    private final Location eZoneMax;
     private GameState gameState;
 
     public SpleefGame(Location arenaLocation, SpleefArea spleefArea) {
         players = new ArrayList<>();
         minimumToRun = 2;
-        this.arenaLocation = arenaLocation;
+        this.arenaOrigin = arenaLocation;
         this.arena = spleefArea;
-    }
 
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
-
-    public SpleefArea getSpleefArea() {
-        return arena;
-    }
-
-    public void setArena(SpleefArea arena){
-        this.arena = arena;
-    }
-
-    public Integer getMinimumToRun(){
-        return minimumToRun;
-    }
-
-    public Location getArenaLocation() {
-        return arenaLocation;
-    }
-
-    public void setArenaLocation(Location arenaLocation) {
-        this.arenaLocation = arenaLocation;
-    }
-
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-    public void setWaitTime(Integer waitTime) {
-        this.waitTime = waitTime;
-    }
-
-    public Integer getWaitTime() {
-        return waitTime;
+        LocationTriplet eZoneMaxOff = spleefArea.getEZoneMax();
+        LocationTriplet eZoneMinOff = spleefArea.getEZoneMin();
+        this.eZoneMax = arenaOrigin.add(eZoneMaxOff.getX(), eZoneMaxOff.getY(), eZoneMaxOff.getZ());
+        this.eZoneMin = arenaOrigin.add(eZoneMinOff.getX(), eZoneMinOff.getY(), eZoneMinOff.getZ());
     }
 
     public void start() {
-        SpleefStartEvent event = new SpleefStartEvent(this);
+        SpleefStartGameEvent event = new SpleefStartGameEvent(this);
         Bukkit.getPluginManager().callEvent(event);
 
-        if(event.isCancelled());
-            //Handle canceled event
+        if (event.isCancelled()) ;
+        //Handle canceled event
 
+    }
+
+    public void eliminate(Player player) {
+        if (!players.contains(player))
+            return;
+
+        PlayerEliminateEvent event = new PlayerEliminateEvent(player, this);
+        Bukkit.getPluginManager().callEvent(event);
+        players.remove(player);
     }
 }
