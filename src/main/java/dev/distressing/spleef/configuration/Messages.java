@@ -20,6 +20,7 @@ public enum Messages {
     GAME_NOPVP("&7Pvp is disabled during Spleef games"),
     GAME_NONE_FOUND("&7There are currently no open games"),
     GAME_LIST("&7%name%"),
+    GAME_CREATED("&7Game created"),
 
     NoPermission("&cInsufficient permissions"),
 
@@ -50,7 +51,8 @@ public enum Messages {
     AREA_OUTSIDE_BOUNDS("&7This location is outside the bounds of the main arena"),
     AREA_WITHIN_ELIMINATION("&7The selected spawn point is within the elimination zone."),
     AREA_BUILDING_CANCELED("&7You have canceled the building of an arena"),
-    AREA_NOT_FOUND("&7An arena with that name was not found");
+    AREA_NOT_FOUND("&7An arena with that name was not found"),
+    AREA_DELETED("&7Arena has been deleted.");
 
 
     private String message;

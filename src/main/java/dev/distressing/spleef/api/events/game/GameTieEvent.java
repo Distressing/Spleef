@@ -1,11 +1,11 @@
-package dev.distressing.spleef.events.game;
+package dev.distressing.spleef.api.events.game;
 
 import dev.distressing.spleef.objects.SpleefGame;
 
-public class GameStateChangeEvent extends SpleefGameEvent {
+public class GameTieEvent extends SpleefGameEvent {
     private final SpleefGame spleefGame;
 
-    public GameStateChangeEvent(SpleefGame spleefGame) {
+    public GameTieEvent(SpleefGame spleefGame) {
         this.spleefGame = spleefGame;
     }
 

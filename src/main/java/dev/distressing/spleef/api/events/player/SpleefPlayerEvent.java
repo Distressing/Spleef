@@ -1,4 +1,4 @@
-package dev.distressing.spleef.events.player;
+package dev.distressing.spleef.api.events.player;
 
 import lombok.Getter;
 import lombok.Setter;

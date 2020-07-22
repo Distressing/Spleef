@@ -1,7 +1,0 @@
-
-database:
-  uri: "mongodb://customer_123170:baLGQwTStMoI@10.0.0.2:27017/customer_123170?ssl=false&authSource=customer_123170&retryWrites=true&w=majority"
-
-gameTps: 5
-
-

@@ -1,4 +1,4 @@
-package dev.distressing.spleef.events.game;
+package dev.distressing.spleef.api.events.game;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

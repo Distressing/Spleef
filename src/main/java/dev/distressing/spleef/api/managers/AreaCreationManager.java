@@ -1,4 +1,4 @@
-package dev.distressing.spleef.managers;
+package dev.distressing.spleef.api.managers;
 
 import dev.distressing.spleef.configuration.Messages;
 import dev.distressing.spleef.objects.SpleefAreaBuilder;
@@ -24,7 +24,7 @@ public class AreaCreationManager {
 
     public void startBuilder(Player player, String name) {
 
-        if (arenaManager.getArena(name).isPresent()) {
+        if (arenaManager.getByName(name).isPresent()) {
             player.sendMessage(Messages.AREA_EXISTS.getWithPrefix());
             return;
         }

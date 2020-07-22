@@ -1,7 +1,9 @@
-package dev.distressing.spleef.managers;
+package dev.distressing.spleef.api.managers;
 
-import dev.distressing.spleef.enums.GameState;
-import dev.distressing.spleef.events.game.GameStateChangeEvent;
+import dev.distressing.spleef.api.enums.GameState;
+import dev.distressing.spleef.api.events.game.GameCreateEvent;
+import dev.distressing.spleef.api.events.game.GameDeleteEvent;
+import dev.distressing.spleef.api.events.game.GameStateChangeEvent;
 import dev.distressing.spleef.objects.SpleefGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -51,10 +53,12 @@ public class GameManager {
 
     public void addGame(SpleefGame spleefGame) {
         games.add(spleefGame);
+        Bukkit.getPluginManager().callEvent(new GameCreateEvent(spleefGame));
     }
 
     public void removeGame(SpleefGame spleefGame) {
         games.remove(spleefGame);
+        Bukkit.getPluginManager().callEvent(new GameDeleteEvent(spleefGame));
     }
 
     public void shutdown() {

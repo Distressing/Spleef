@@ -1,11 +1,11 @@
 package dev.distressing.spleef.commands;
 
+import dev.distressing.spleef.api.managers.AreaCreationManager;
+import dev.distressing.spleef.api.managers.ArenaManager;
+import dev.distressing.spleef.api.managers.GameManager;
 import dev.distressing.spleef.configuration.Messages;
 import dev.distressing.spleef.data.SpleefDataManager;
 import dev.distressing.spleef.data.objects.SpleefPlayer;
-import dev.distressing.spleef.managers.AreaCreationManager;
-import dev.distressing.spleef.managers.ArenaManager;
-import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefArea;
 import dev.distressing.spleef.objects.SpleefGame;
 import org.bukkit.Bukkit;
@@ -15,10 +15,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class SpleefCMD implements CommandExecutor {
 
@@ -57,12 +54,12 @@ public class SpleefCMD implements CommandExecutor {
                 }
 
                 if (args[1].equalsIgnoreCase("list")) {
-                    HashMap<String, SpleefArea> spleefAreaHashMap = arenaManager.getArenas();
+                    HashMap<UUID, SpleefArea> spleefAreaHashMap = arenaManager.getArenas();
                     if (spleefAreaHashMap.isEmpty()) {
                         sender.sendMessage("There are no arenas currently setup");
                         return false;
                     }
-                    spleefAreaHashMap.forEach((key, value) -> sender.sendMessage(key));
+                    spleefAreaHashMap.forEach((key, value) -> sender.sendMessage(value.getName()));
                     return false;
                 }
 
@@ -75,6 +72,26 @@ public class SpleefCMD implements CommandExecutor {
                     String name = args[2];
 
                     areaCreationManager.startBuilder((Player) sender, name);
+                    break;
+                }
+
+                if (args[1].equalsIgnoreCase("delete")) {
+                    if (args.length != 3) {
+                        sender.sendMessage(Messages.HELP_ARENA_REMOVE.getWithPrefix());
+                        return false;
+                    }
+
+                    String name = args[2];
+
+                    Optional<SpleefArea> areaOptional = arenaManager.getByName(name);
+
+                    if(!areaOptional.isPresent()) {
+                        sender.sendMessage(Messages.AREA_NOT_FOUND.getWithPrefix());
+                        return false;
+                    }
+
+                    arenaManager.removeArena(areaOptional.get());
+                    sender.sendMessage(Messages.AREA_DELETED.getWithPrefix());
                     break;
                 }
 
@@ -97,7 +114,7 @@ public class SpleefCMD implements CommandExecutor {
                     }
                 }
 
-                Optional<SpleefArea> areaOptional = arenaManager.getArena(arena);
+                Optional<SpleefArea> areaOptional = arenaManager.getByName(arena);
 
                 if (!areaOptional.isPresent()) {
                     sender.sendMessage(Messages.AREA_NOT_FOUND.getWithPrefix());
@@ -106,6 +123,7 @@ public class SpleefCMD implements CommandExecutor {
 
                 SpleefGame game = new SpleefGame(name, ((Player) sender).getLocation(), areaOptional.get(), playerCount);
                 gameManager.addGame(game);
+                sender.sendMessage(Messages.GAME_CREATED.getWithPrefix());
 
                 break;
 
@@ -170,7 +188,7 @@ public class SpleefCMD implements CommandExecutor {
                     }
                 }
 
-                SpleefPlayer spleefPlayer = spleefDataManager.get((Player) sender);
+                SpleefPlayer spleefPlayer = spleefDataManager.get(target);
 
                 if (spleefPlayer == null) {
                     sender.sendMessage(Messages.PLAYER_NOT_FOUND.getWithPrefix());
@@ -182,9 +200,7 @@ public class SpleefCMD implements CommandExecutor {
                         .replace("%wins%", spleefPlayer.getWins() + "")
                 );
                 break;
-
         }
-
         return false;
     }
 }

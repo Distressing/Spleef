@@ -1,6 +1,6 @@
-package dev.distressing.spleef.events.player;
+package dev.distressing.spleef.api.events.player;
 
-import dev.distressing.spleef.data.enums.LeaveReason;
+import dev.distressing.spleef.api.enums.LeaveReason;
 import dev.distressing.spleef.objects.SpleefGame;
 import lombok.Getter;
 import lombok.Setter;

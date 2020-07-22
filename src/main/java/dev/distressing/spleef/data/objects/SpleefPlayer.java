@@ -1,7 +1,7 @@
 package dev.distressing.spleef.data.objects;
 
+import dev.distressing.spleef.api.enums.LeaveReason;
 import dev.distressing.spleef.data.enums.DataType;
-import dev.distressing.spleef.data.enums.LeaveReason;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;

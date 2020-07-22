@@ -1,11 +1,12 @@
 package dev.distressing.spleef.listeners;
 
+import dev.distressing.spleef.api.events.game.GameStateChangeEvent;
+import dev.distressing.spleef.api.events.game.SpleefGameEndEvent;
+import dev.distressing.spleef.api.events.game.SpleefStartGameEvent;
+import dev.distressing.spleef.api.events.player.PlayerGameWinEvent;
+import dev.distressing.spleef.api.managers.GameManager;
 import dev.distressing.spleef.configuration.Messages;
-import dev.distressing.spleef.events.game.GameStateChangeEvent;
-import dev.distressing.spleef.events.game.SpleefGameEndEvent;
-import dev.distressing.spleef.events.game.SpleefStartGameEvent;
-import dev.distressing.spleef.events.player.PlayerGameWinEvent;
-import dev.distressing.spleef.managers.GameManager;
+import dev.distressing.spleef.objects.SpleefArea;
 import dev.distressing.spleef.objects.SpleefGame;
 import dev.distressing.spleef.utils.ChatUtil;
 import dev.distressing.spleef.utils.ItemBuilder;
@@ -36,13 +37,26 @@ public class GameListeners implements Listener {
 
             case GRACE:
                 String grace = ChatUtil.color(Messages.GAME_GRACE_START.getWithPrefix());
-                game.getPlayers().forEach(player -> player.sendMessage(grace));
+                game.getPlayers().forEach(player -> {
+                    player.sendMessage(grace);
+                    player.setHealth(20);
+                    player.setFoodLevel(20);
+                });
                 break;
 
             case RUNNING:
                 String running = ChatUtil.color(Messages.GAME_GRACE_END.getWithPrefix());
                 game.getPlayers().forEach(player -> player.sendMessage(running));
                 break;
+
+            case WAITING:
+                SpleefArea area = game.getArea();
+
+                if(area != null)
+                    return;
+
+                gameManager.removeGame(game);
+                System.out.println(game.getName()+" was deleted due to it missing an arena");
 
             default:
                 break;

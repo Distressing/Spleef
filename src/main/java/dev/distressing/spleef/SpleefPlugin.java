@@ -1,5 +1,9 @@
 package dev.distressing.spleef;
 
+import dev.distressing.spleef.api.SpleefPluginApi;
+import dev.distressing.spleef.api.managers.AreaCreationManager;
+import dev.distressing.spleef.api.managers.ArenaManager;
+import dev.distressing.spleef.api.managers.GameManager;
 import dev.distressing.spleef.commands.SpleefCMD;
 import dev.distressing.spleef.configuration.Messages;
 import dev.distressing.spleef.configuration.SpleefConfig;
@@ -8,9 +12,6 @@ import dev.distressing.spleef.listeners.AreaCreationListener;
 import dev.distressing.spleef.listeners.GameListeners;
 import dev.distressing.spleef.listeners.PlayerListeners;
 import dev.distressing.spleef.listeners.StatisticsListener;
-import dev.distressing.spleef.managers.AreaCreationManager;
-import dev.distressing.spleef.managers.ArenaManager;
-import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefArea;
 import dev.distressing.spleef.persist.Persist;
 import dev.distressing.spleef.runnables.SpleefGameTicker;
@@ -21,9 +22,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpleefPlugin extends JavaPlugin {
 
-    private static SpleefDataManager spleefDataManager;
     private static SpleefPlugin instance;
     private final Persist persist = new Persist();
+    private SpleefDataManager spleefDataManager;
     private ArenaManager arenaManager;
     private GameManager gameManager;
 
@@ -57,11 +58,14 @@ public class SpleefPlugin extends JavaPlugin {
                 new GameListeners(gameManager),
                 new StatisticsListener(spleefDataManager)
         );
+
+        SpleefPluginApi.init(spleefDataManager, areaCreationManager, arenaManager, gameManager);
     }
 
     @Override
     public void onDisable() {
         spleefDataManager.shutdown();
+        gameManager.shutdown();
         gameManager.resetGames();
         arenaManager.clearCache();
 

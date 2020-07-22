@@ -1,12 +1,12 @@
 package dev.distressing.spleef.runnables;
 
+import dev.distressing.spleef.api.enums.GameState;
+import dev.distressing.spleef.api.events.game.GameStateChangeEvent;
+import dev.distressing.spleef.api.events.game.GameTieEvent;
+import dev.distressing.spleef.api.events.game.SpleefGameEndEvent;
+import dev.distressing.spleef.api.events.player.PlayerGameWinEvent;
+import dev.distressing.spleef.api.managers.GameManager;
 import dev.distressing.spleef.configuration.Messages;
-import dev.distressing.spleef.enums.GameState;
-import dev.distressing.spleef.events.game.GameStateChangeEvent;
-import dev.distressing.spleef.events.game.GameTieEvent;
-import dev.distressing.spleef.events.game.SpleefGameEndEvent;
-import dev.distressing.spleef.events.player.PlayerGameWinEvent;
-import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefGame;
 import dev.distressing.spleef.utils.ArenaUtils;
 import org.bukkit.Bukkit;
@@ -67,7 +67,7 @@ public class SpleefGameTicker implements Runnable {
                     if (game.getPlayers().size() >= game.getMinimumToRun()) {
                         game.setGameState(GameState.CONFIRMED);
                         game.setWaitTime(10 * gameManager.getGameTickRate());
-                        game.getArena().paste(game.getArenaOrigin());
+                        game.getArea().paste(game.getGameOrigin());
                         Bukkit.getPluginManager().callEvent(new GameStateChangeEvent(game));
                     }
                     break;
@@ -82,9 +82,11 @@ public class SpleefGameTicker implements Runnable {
                         waitTime2--;
                         game.setWaitTime(waitTime2);
 
-                        if (waitTime2 < 4 * gameManager.getGameTickRate() && (waitTime2 & gameManager.getGameTickRate()) == 0) {
-                            String message = Messages.GAME_STARTING.getWithPrefix().replace("%time%", (waitTime2 / gameManager.getGameTickRate()) + "");
-                            game.getPlayers().forEach(player -> player.sendMessage(message));
+                        if (waitTime2 <= (5 * gameManager.getGameTickRate()) && waitTime2 != 0) {
+                            if(waitTime2 % gameManager.getGameTickRate() == 0) {
+                                String message = Messages.GAME_STARTING.getWithPrefix().replace("%time%", (waitTime2 / gameManager.getGameTickRate()) + "");
+                                game.getPlayers().forEach(player -> player.sendMessage(message));
+                            }
                         }
 
                         return;

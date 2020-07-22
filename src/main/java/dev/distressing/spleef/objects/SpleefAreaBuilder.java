@@ -1,8 +1,8 @@
 package dev.distressing.spleef.objects;
 
+import dev.distressing.spleef.api.managers.AreaCreationManager;
+import dev.distressing.spleef.api.managers.ArenaManager;
 import dev.distressing.spleef.configuration.Messages;
-import dev.distressing.spleef.managers.AreaCreationManager;
-import dev.distressing.spleef.managers.ArenaManager;
 import dev.distressing.spleef.utils.ArenaUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +40,7 @@ public class SpleefAreaBuilder {
     }
 
     public void build(ArenaManager arenaManager, AreaCreationManager areaCreationManager) {
-        if (arenaManager.getArena(name).isPresent()) {
+        if (arenaManager.getByName(name).isPresent()) {
             player.sendMessage(Messages.AREA_EXISTS.getWithPrefix());
             areaCreationManager.stopBuilder(player);
             return;
@@ -51,8 +51,8 @@ public class SpleefAreaBuilder {
         Location minEliminationLoc = ArenaUtils.getMinLocation(eZonePos1, eZonePos2);
         Location maxEliminationLoc = ArenaUtils.getMaxLocation(eZonePos1, eZonePos2);
 
-        SpleefArea area = new SpleefArea(minLocation, maxLocation, spawnPoint, minEliminationLoc, maxEliminationLoc);
-        arenaManager.addArena(name, area);
+        SpleefArea area = new SpleefArea(name, minLocation, maxLocation, spawnPoint, minEliminationLoc, maxEliminationLoc);
+        arenaManager.addArena(area);
         areaCreationManager.stopBuilder(player);
 
         player.sendMessage(Messages.AREA_CREATION_SUCCESS.getWithPrefix());

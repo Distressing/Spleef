@@ -21,11 +21,15 @@ public class SpleefArea {
     private final LocationTriplet centerOffset;
     private final LocationTriplet eZoneMin;
     private final LocationTriplet eZoneMax;
+    private final UUID identifier;
+    private final String name;
     private List<OffsetCloneBlock> spleefArenaBlocks;
 
-    public SpleefArea(Location minLocation, Location maxLocation, Location spawnPoint, Location eZoneMin, Location eZoneMax) {
+    public SpleefArea(String name, Location minLocation, Location maxLocation, Location spawnPoint, Location eZoneMin, Location eZoneMax) {
         this.arenaMinLocation = minLocation;
         this.arenaMaxLocation = maxLocation;
+        this.identifier = UUID.randomUUID();
+        this.name = name;
 
         this.eZoneMin = ArenaUtils.getOffsetLocationTriplet(minLocation, eZoneMin);
         this.eZoneMax = ArenaUtils.getOffsetLocationTriplet(minLocation, eZoneMax);

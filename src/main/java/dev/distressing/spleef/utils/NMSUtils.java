@@ -23,7 +23,6 @@ public class NMSUtils {
         World nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         request.forEach((key, value) -> {
             Chunk nmsChunk = nmsWorld.getChunkAt(key.x, key.z);
-            System.out.println("Pasting " + value.size());
 
             final ChunkSection[] chunkSection = {null};
 

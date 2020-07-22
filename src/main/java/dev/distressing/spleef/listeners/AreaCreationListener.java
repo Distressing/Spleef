@@ -1,7 +1,7 @@
 package dev.distressing.spleef.listeners;
 
+import dev.distressing.spleef.api.managers.AreaCreationManager;
 import dev.distressing.spleef.configuration.Messages;
-import dev.distressing.spleef.managers.AreaCreationManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
