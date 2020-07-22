@@ -1,6 +1,6 @@
 package dev.distressing.spleef.configuration;
 
-import dev.distressing.spleef.utils.Chat;
+import dev.distressing.spleef.utils.ChatUtil;
 import org.bukkit.entity.Player;
 
 public enum Messages {
@@ -69,10 +69,10 @@ public enum Messages {
     }
 
     public String getWithPrefix() {
-        return Chat.color(Messages.PREFIX.message + message);
+        return ChatUtil.color(Messages.PREFIX.message + message);
     }
 
     public String getWithPrefix(Player player) {
-        return Chat.color(Messages.PREFIX.message + message.replaceAll("%player%", player.getName()));
+        return ChatUtil.color(Messages.PREFIX.message + message.replaceAll("%player%", player.getName()));
     }
 }

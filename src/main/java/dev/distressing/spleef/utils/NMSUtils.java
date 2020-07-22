@@ -20,7 +20,7 @@ public class NMSUtils {
 
     public static void spawnArena(HashMap<ChunkCoordIntPair, HashSet<DBlock>> request, Location location) {
         Map<org.bukkit.Material, IBlockData> dataMap = new HashMap<>();
-        net.minecraft.server.v1_8_R3.World nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
+        World nmsWorld = ((CraftWorld) location.getWorld()).getHandle();
         request.forEach((key, value) -> {
             Chunk nmsChunk = nmsWorld.getChunkAt(key.x, key.z);
             System.out.println("Pasting " + value.size());

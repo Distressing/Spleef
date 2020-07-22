@@ -7,7 +7,7 @@ import dev.distressing.spleef.events.game.SpleefStartGameEvent;
 import dev.distressing.spleef.events.player.PlayerGameWinEvent;
 import dev.distressing.spleef.managers.GameManager;
 import dev.distressing.spleef.objects.SpleefGame;
-import dev.distressing.spleef.utils.Chat;
+import dev.distressing.spleef.utils.ChatUtil;
 import dev.distressing.spleef.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -30,17 +30,17 @@ public class GameListeners implements Listener {
 
         switch (game.getGameState()) {
             case CONFIRMED:
-                String confirmed = Chat.color(Messages.GAME_STARTING.getWithPrefix().replace("%time%", game.getWaitTime() / gameManager.getGameTickRate() + ""));
+                String confirmed = ChatUtil.color(Messages.GAME_STARTING.getWithPrefix().replace("%time%", game.getWaitTime() / gameManager.getGameTickRate() + ""));
                 game.getPlayers().forEach(player -> player.sendMessage(confirmed));
                 break;
 
             case GRACE:
-                String grace = Chat.color(Messages.GAME_GRACE_START.getWithPrefix());
+                String grace = ChatUtil.color(Messages.GAME_GRACE_START.getWithPrefix());
                 game.getPlayers().forEach(player -> player.sendMessage(grace));
                 break;
 
             case RUNNING:
-                String running = Chat.color(Messages.GAME_GRACE_END.getWithPrefix());
+                String running = ChatUtil.color(Messages.GAME_GRACE_END.getWithPrefix());
                 game.getPlayers().forEach(player -> player.sendMessage(running));
                 break;
 
@@ -54,7 +54,7 @@ public class GameListeners implements Listener {
     public void onWin(PlayerGameWinEvent event) {
         Player player = event.getPlayer();
 
-        Bukkit.broadcastMessage(Chat.color(Messages.GAME_WIN.getWithPrefix(player)));
+        Bukkit.broadcastMessage(ChatUtil.color(Messages.GAME_WIN.getWithPrefix(player)));
         player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
         player.getInventory().clear();
     }

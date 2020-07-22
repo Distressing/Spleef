@@ -16,11 +16,11 @@ public class GameManager {
     private int gameTickRate = 5;
 
     public Optional<Set<SpleefGame>> getOpenGames() {
-        return Optional.ofNullable(games.stream().filter(game -> game.getGameState().equals(GameState.WAITING) || game.getGameState().equals(GameState.CONFIRMED)).collect(Collectors.toSet()));
+        return Optional.of(games.stream().filter(game -> game.getGameState().equals(GameState.WAITING) || game.getGameState().equals(GameState.CONFIRMED)).collect(Collectors.toSet()));
     }
 
     public Optional<Set<SpleefGame>> getActiveGames() {
-        return Optional.ofNullable(games.stream().filter(game -> !game.getGameState().equals(GameState.WAITING) && !game.getGameState().equals(GameState.CONFIRMED)).collect(Collectors.toSet()));
+        return Optional.of(games.stream().filter(game -> !game.getGameState().equals(GameState.WAITING) && !game.getGameState().equals(GameState.CONFIRMED)).collect(Collectors.toSet()));
     }
 
     public Set<SpleefGame> getGames() {

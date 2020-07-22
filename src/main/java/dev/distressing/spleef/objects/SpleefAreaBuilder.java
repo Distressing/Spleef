@@ -15,7 +15,11 @@ public class SpleefAreaBuilder {
     private final String name;
     private final Player player;
     private int creationStep;
-    private Location pos1, pos2, eZonePos1, eZonePos2, spawnPoint;
+    private Location pos1;
+    private Location pos2;
+    private Location eZonePos1;
+    private Location eZonePos2;
+    private Location spawnPoint;
 
     public SpleefAreaBuilder(Player player, String name) {
         this.name = name;

@@ -2,7 +2,7 @@ package dev.distressing.spleef.managers;
 
 import dev.distressing.spleef.configuration.Messages;
 import dev.distressing.spleef.objects.SpleefAreaBuilder;
-import dev.distressing.spleef.utils.Chat;
+import dev.distressing.spleef.utils.ChatUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -12,12 +12,10 @@ import java.util.UUID;
 
 public class AreaCreationManager {
     private final ArenaManager arenaManager;
-    private final GameManager gameManager;
     private final HashMap<UUID, SpleefAreaBuilder> areaBuilders = new HashMap<>();
 
-    public AreaCreationManager(ArenaManager arenaManager, GameManager gameManager) {
+    public AreaCreationManager(ArenaManager arenaManager) {
         this.arenaManager = arenaManager;
-        this.gameManager = gameManager;
     }
 
     public boolean isBuilding(Player player) {
@@ -32,7 +30,7 @@ public class AreaCreationManager {
         }
 
         areaBuilders.put(player.getUniqueId(), new SpleefAreaBuilder(player, name));
-        player.sendMessage(Chat.color(Messages.AREA_DEFINE_START.getWithPrefix()));
+        player.sendMessage(ChatUtil.color(Messages.AREA_DEFINE_START.getWithPrefix()));
     }
 
     public void stopBuilder(Player player) {

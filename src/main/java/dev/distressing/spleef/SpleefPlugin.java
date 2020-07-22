@@ -42,7 +42,7 @@ public class SpleefPlugin extends JavaPlugin {
 
         this.gameManager = persist.getFile(GameManager.class).exists() ? persist.load(GameManager.class) : new GameManager();
         this.arenaManager = persist.getFile(ArenaManager.class).exists() ? persist.load(ArenaManager.class) : new ArenaManager();
-        AreaCreationManager areaCreationManager = new AreaCreationManager(arenaManager, gameManager);
+        AreaCreationManager areaCreationManager = new AreaCreationManager(arenaManager);
 
         gameManager.resetGames();
         arenaManager.getArenas().values().forEach(SpleefArea::refreshArena);

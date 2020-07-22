@@ -7,7 +7,7 @@ import dev.distressing.spleef.events.game.GameStateChangeEvent;
 import dev.distressing.spleef.events.game.SpleefStartGameEvent;
 import dev.distressing.spleef.events.player.PlayerGameJoin;
 import dev.distressing.spleef.events.player.PlayerLeaveEvent;
-import dev.distressing.spleef.utils.Chat;
+import dev.distressing.spleef.utils.ChatUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -66,7 +66,7 @@ public class SpleefGame {
             return;
 
         players.add(player);
-        players.forEach(gamePlayer -> gamePlayer.sendMessage(Chat.color(Messages.PLAYER_JOINED_LOBBY.getWithPrefix(player))));
+        players.forEach(gamePlayer -> gamePlayer.sendMessage(ChatUtil.color(Messages.PLAYER_JOINED_LOBBY.getWithPrefix(player))));
 
         Bukkit.getPluginManager().callEvent(new PlayerGameJoin(player, this));
     }
@@ -74,7 +74,7 @@ public class SpleefGame {
     public void processLeave(Player player) {
         Bukkit.getPluginManager().callEvent(new PlayerLeaveEvent(player, this, LeaveReason.QUIT));
         players.remove(player);
-        players.forEach(gamePlayer -> gamePlayer.sendMessage(Chat.color(Messages.PLAYER_QUIT_LOBBY.getWithPrefix(player))));
+        players.forEach(gamePlayer -> gamePlayer.sendMessage(ChatUtil.color(Messages.PLAYER_QUIT_LOBBY.getWithPrefix(player))));
     }
 
     public void start() {

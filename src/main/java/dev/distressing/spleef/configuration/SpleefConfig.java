@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class SpleefConfig {
-    static YamlConfiguration config;
+    private static YamlConfiguration config;
     private static File CONFIG_FILE;
 
     public static void init(SpleefPlugin plugin) {
