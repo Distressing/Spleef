@@ -82,11 +82,9 @@ public class SpleefGameTicker implements Runnable {
                         waitTime2--;
                         game.setWaitTime(waitTime2);
 
-                        if (waitTime2 <= (5 * gameManager.getGameTickRate()) && waitTime2 != 0) {
-                            if(waitTime2 % gameManager.getGameTickRate() == 0) {
-                                String message = Messages.GAME_STARTING.getWithPrefix().replace("%time%", (waitTime2 / gameManager.getGameTickRate()) + "");
-                                game.getPlayers().forEach(player -> player.sendMessage(message));
-                            }
+                        if (waitTime2 <= (5 * gameManager.getGameTickRate()) && waitTime2 != 0 && waitTime2 % gameManager.getGameTickRate() == 0) {
+                            String message = Messages.GAME_STARTING.getWithPrefix().replace("%time%", (waitTime2 / gameManager.getGameTickRate()) + "");
+                            game.getPlayers().forEach(player -> player.sendMessage(message));
                         }
 
                         return;

@@ -48,6 +48,12 @@ public class SpleefCMD implements CommandExecutor {
                 }
 
             case "arena":
+
+                if(!sender.hasPermission("spleef.admin")) {
+                    sender.sendMessage(Messages.NoPermission.getWithPrefix());
+                    return false;
+                }
+
                 if (args.length == 1) {
                     Arrays.stream(Messages.values()).filter(message -> message.toString().toLowerCase().startsWith("help_arena")).forEach(message -> sender.sendMessage(message.getWithPrefix()));
                     return false;
@@ -56,7 +62,7 @@ public class SpleefCMD implements CommandExecutor {
                 if (args[1].equalsIgnoreCase("list")) {
                     HashMap<UUID, SpleefArea> spleefAreaHashMap = arenaManager.getArenas();
                     if (spleefAreaHashMap.isEmpty()) {
-                        sender.sendMessage("There are no arenas currently setup");
+                        sender.sendMessage(Messages.AREA_NOT_FOUND.getWithPrefix());
                         return false;
                     }
                     spleefAreaHashMap.forEach((key, value) -> sender.sendMessage(value.getName()));
@@ -96,6 +102,11 @@ public class SpleefCMD implements CommandExecutor {
                 }
 
             case "create":
+                if(!sender.hasPermission("spleef.admin")) {
+                    sender.sendMessage(Messages.NoPermission.getWithPrefix());
+                    return false;
+                }
+
                 if (args.length < 3) {
                     sender.sendMessage(Messages.MAIN_HELP_GAMES.getWithPrefix());
                     return false;
